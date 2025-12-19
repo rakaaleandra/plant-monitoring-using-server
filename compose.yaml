@@ -68,7 +68,7 @@ services:
     image: cassandra:5-jammy
     container_name: database-cassandra
     ports:
-      - "127.0.0.1:9042:9042"
+      - "9042:9042"
     volumes:
       - vol-cassandra-data:/var/lib/cassandra/data
       - vol-cassandra-commitlog:/var/lib/cassandra/commitlog

@@ -77,7 +77,7 @@ def main():
             status = data.get('status')
             kelembapan_udara = int(data['kelembapan_udara']) if data.get('kelembapan_udara') is not None else None
             kelembapan_tanah = int(data['kelembapan_tanah']) if data.get('kelembapan_tanah') is not None else None
-            durasi_siram = int(data['durasi_siram']) if data.get('durasi_siram') is not None else None
+            durasi_siram = float(data['durasi_siram']) if data.get('durasi_siram') is not None else None
             cahaya = float(data['cahaya']) if data.get('cahaya') is not None else None
 
             try:
