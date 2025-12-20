@@ -7,7 +7,7 @@ from cassandra import ConsistencyLevel
 from datetime import datetime
 
 
-CASSANDRA_HOST = 'cassandra' 
+CASSANDRA_HOST = 'database-cassandra' 
 CASSANDRA_PORT = 9042
 KEYSPACE = 'kafkastorage'
 KAFKA_BROKER = 'broker:9092'

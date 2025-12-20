@@ -1,2 +1,2 @@
-kafka-python==2.0.2
-cassandra-driver==3.29.2
+kafka-python==2.3.0
+cassandra-driver==3.29.3
