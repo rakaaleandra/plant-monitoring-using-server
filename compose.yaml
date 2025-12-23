@@ -1,10 +1,4 @@
 volumes:
-  vol-emqx-data:
-    name: foo-emqx-data
-  vol-emqx-log:
-    name: foo-emqx-log
-  vol-kafka-data:
-    name: foo-kafka-data
   vol-cassandra-data:
     name: foo-cassandra-data
   vol-cassandra-commitlog:
@@ -13,57 +7,6 @@ volumes:
     name: foo-cassandra-saved_caches
 
 services:
-  emqx:
-    image: emqx/emqx:latest
-    container_name: broker-emqx
-    environment:
-      EMQX_NAME: emqx
-      EMQX_HOST: 127.0.0.1
-    ports:
-      - "1884:1883"
-      - "18084:18083"
-      - "8884:8883"
-    volumes:
-      - vol-emqx-data:/opt/emqx/data
-      - vol-emqx-log:/opt/emqx/log
-    restart: unless-stopped
-    mem_limit: 1G
-
-    healthcheck:
-      test: ["CMD-SHELL", "bash -c 'cat < /dev/tcp/127.0.0.1/18083 >/dev/null 2>&1'"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-  
-  broker:
-    image: apache/kafka:4.1.1
-    container_name: broker-kafka
-    ports:
-    - "127.0.0.1:9092:9092"
-    - "9094:9094"
-    restart: unless-stopped
-    mem_limit: 1G
-    
-    healthcheck:
-      test: ["CMD-SHELL", "bash -c 'cat < /dev/tcp/127.0.0.1/9092 >/dev/null 2>&1'"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PUBLIC://0.0.0.0:9094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PUBLIC:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_NUM_PARTITIONS: 3
-    volumes:
-      - vol-kafka-data:/var/lib/kafka/data
 
   cassandra:
     image: cassandra:5-jammy
@@ -75,7 +18,6 @@ services:
       - vol-cassandra-commitlog:/var/lib/cassandra/commitlog
       - vol-cassandra-saved_caches:/var/lib/cassandra/saved_caches
     restart: unless-stopped
-    mem_limit: 3G
 
     healthcheck:
       test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
