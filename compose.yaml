@@ -5,12 +5,6 @@ volumes:
     name: foo-emqx-log
   vol-kafka-data:
     name: foo-kafka-data
-  vol-cassandra-data:
-    name: foo-cassandra-data
-  vol-cassandra-commitlog:
-    name: foo-cassandra-commitlog
-  vol-cassandra-saved_caches:
-    name: foo-cassandra-saved_caches
 
 services:
   emqx:
@@ -53,7 +47,7 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PUBLIC://0.0.0.0:9094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092, 
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PUBLIC:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:9093
@@ -64,21 +58,3 @@ services:
       KAFKA_NUM_PARTITIONS: 3
     volumes:
       - vol-kafka-data:/var/lib/kafka/data
-
-  cassandra:
-    image: cassandra:5-jammy
-    container_name: database-cassandra
-    ports:
-      - "9042:9042"
-    volumes:
-      - vol-cassandra-data:/var/lib/cassandra/data
-      - vol-cassandra-commitlog:/var/lib/cassandra/commitlog
-      - vol-cassandra-saved_caches:/var/lib/cassandra/saved_caches
-    restart: unless-stopped
-    mem_limit: 3G
-
-    healthcheck:
-      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
